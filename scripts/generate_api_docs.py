@@ -7,6 +7,8 @@ It avoids importing the package by relying on sphinx-autoapi
 to parse source files directly.
 """
 
+from __future__ import annotations
+
 import shutil
 import os
 import sys

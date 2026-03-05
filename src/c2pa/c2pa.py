@@ -11,6 +11,8 @@
 # specific language governing permissions and limitations under
 # each license.
 
+from __future__ import annotations
+
 import ctypes
 import enum
 import json

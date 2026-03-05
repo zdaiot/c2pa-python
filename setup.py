@@ -217,11 +217,11 @@ if 'bdist_wheel' in sys.argv or 'build' in sys.argv:
                 "Programming Language :: Python :: 3",
                 get_platform_classifier(target_platform),
             ],
-            python_requires=">=3.10",
-            long_description=open("README.md").read(),
-            long_description_content_type="text/markdown",
-            license="MIT OR Apache-2.0",
-        )
+    python_requires=">=3.8",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    license="MIT OR Apache-2.0",
+    )
     finally:
         # Clean up
         if PACKAGE_LIBS_DIR.exists():
@@ -242,7 +242,7 @@ setup(
         "Programming Language :: Python :: 3",
         get_platform_classifier(get_current_platform()),
     ],
-    python_requires=">=3.10",
+    python_requires=">=3.8",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     license="MIT OR Apache-2.0",

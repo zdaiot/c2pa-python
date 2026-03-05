@@ -4,6 +4,8 @@ Library loading utilities
 Takes care only on loading the needed compiled library.
 """
 
+from __future__ import annotations
+
 import os
 import sys
 import ctypes
