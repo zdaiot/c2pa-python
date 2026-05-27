@@ -1,5 +1,5 @@
 # Build dependencies
-wheel==0.41.2  # For building wheels
+wheel==0.46.2  # For building wheels
 setuptools==68.0.0  # For building packages
 build==1.0.3  # For building packages using PEP 517/518
 toml==0.10.2  # For reading pyproject.toml files
@@ -17,7 +17,7 @@ flake8==5.0.4
 
 # Test dependencies (for callback signers)
 cryptography>=45.0.6
- 
+
 # Documentation (disabled for Python 3.8 compatibility - these packages have dependency conflicts)
 # Sphinx>=5.0.0,<7.0.0
 # sphinx-autoapi>=2.0.0,<3.0.0

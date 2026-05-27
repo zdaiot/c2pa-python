@@ -44,6 +44,7 @@ install-from-source: clean-c2pa-env install-deps build-native-from-source instal
 run-examples:
 	python3 ./examples/sign.py
 	python3 ./examples/sign_info.py
+	python3 ./examples/no_thumbnails.py
 	python3 ./examples/training.py
 	rm -rf output/
 
