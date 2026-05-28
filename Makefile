@@ -124,15 +124,30 @@ PLATFORM_ID := $(shell python3 -c "import platform; m={'x86_64':'x86_64-unknown-
 C2PA_RS_DIR := /tmp/c2pa-rs
 
 # 从 c2pa-rs 源码编译 libc2pa_c.so（解决 GLIBC 版本不兼容问题）
-# 前置要求：需要 Rust 工具链 >= 1.86.0（可通过 make install-rust 安装）
+# 前置要求:
+#   - Rust 工具链 >= 1.86.0（可通过 make install-rust 安装）
+#   - 系统 OpenSSL 开发文件 + pkg-config:
+#       Debian/Ubuntu : sudo apt-get install -y libssl-dev pkg-config
+#       RHEL/CentOS 7 : sudo yum install -y openssl-devel pkgconfig
+#       RHEL/CentOS 8+: sudo dnf install -y openssl-devel pkgconf-pkg-config
+#       macOS         : brew install openssl@3 pkg-config
+#
+# 注意: OPENSSL_NO_VENDOR=1 是必须的——c2pa-rs 的上游 crate 强开了 openssl-sys 的
+# vendored feature，会强制从源码编译 OpenSSL（需要 perl FindBin 等罕见依赖）。
+# OPENSSL_NO_VENDOR=1 会覆盖此行为，让 openssl-sys 走 pkg-config 找系统 OpenSSL。
 build-native-from-source:
 	@echo "=== 从源码编译 c2pa-c-ffi ($(C2PA_VERSION)) ==="
 	@command -v cargo >/dev/null 2>&1 || { echo "错误: 未找到 cargo，请先运行 make install-rust"; exit 1; }
-	@echo "Rust 版本: $$(rustc --version)"
-	@echo "Cargo 版本: $$(cargo --version)"
+	@command -v pkg-config >/dev/null 2>&1 || { echo "错误: 未找到 pkg-config，请先安装"; exit 1; }
+	@pkg-config --exists openssl || { echo "错误: pkg-config 未找到 openssl，请安装 libssl-dev/openssl-devel"; exit 1; }
+	@echo "Rust 版本   : $$(rustc --version)"
+	@echo "Cargo 版本  : $$(cargo --version)"
+	@echo "OpenSSL 版本: $$(pkg-config --modversion openssl)"
 	rm -rf $(C2PA_RS_DIR)
 	git clone --branch $(C2PA_VERSION) --depth 1 https://github.com/contentauth/c2pa-rs.git $(C2PA_RS_DIR)
-	cd $(C2PA_RS_DIR) && cargo build --release -p c2pa-c-ffi --features file_io,rust_native_crypto
+	cd $(C2PA_RS_DIR) && \
+		OPENSSL_NO_VENDOR=1 \
+		cargo build --release -p c2pa-c-ffi --features file_io,rust_native_crypto
 	mkdir -p artifacts/$(PLATFORM_ID)
 	cp $(C2PA_RS_DIR)/target/release/libc2pa_c.so artifacts/$(PLATFORM_ID)/libc2pa_c.so
 	@echo "已复制 libc2pa_c.so 到 artifacts/$(PLATFORM_ID)/"

@@ -3719,10 +3719,8 @@ class Builder(ManagedResource):
         mime_type = _get_mime_type_from_path(source_path)
 
         try:
-            with (
-                open(source_path, 'rb') as source_file,
-                open(dest_path, 'w+b') as dest_file,
-            ):
+            with open(source_path, 'rb') as source_file, \
+                 open(dest_path, 'w+b') as dest_file:
                 if signer is not None:
                     return self.sign(signer, mime_type, source_file, dest_file)
                 # else:
